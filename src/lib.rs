@@ -8,7 +8,7 @@ mod utils;
 
 pub struct Blast {
     secret: String,
-    pub config: config::Config,
+    pub config: config::server::Config,
 }
 
 impl Default for Blast {
@@ -16,7 +16,7 @@ impl Default for Blast {
         let secret = utils::generate_secret();
         Self {
             secret: secret.clone(),
-            config: config::Config::init(secret),
+            config: config::server::Config::init(secret),
         }
     }
 }
@@ -24,8 +24,11 @@ impl Default for Blast {
 impl Blast {
     pub fn new(port: Option<u16>) -> Self {
         let mut instance = Blast::default();
+        let mut sys = config::System::init();
         if let Some(port) = port {
-            instance.config.set_port(port);
+            sys.server.set_port(port);
+            sys.save_config().unwrap();
+            instance.config = sys.server;
         };
         instance
     }
@@ -38,7 +41,7 @@ impl Blast {
         self.config.set_port(port);
     }
 
-    pub fn get_config(&self) -> &config::Config {
+    pub fn get_config(&self) -> &config::server::Config {
         &self.config
     }
 
