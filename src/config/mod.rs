@@ -38,12 +38,43 @@ impl System {
     }
 
     pub fn save_config(&self) -> Result<(), Box<dyn std::error::Error>> {
-        println!("Creating config directory...");
+        if self.server.get_debug() {
+            println!("Creating config directory...");
+        }
         std::fs::create_dir_all("config")?;
-        println!("Creating config file...");
+        if self.server.get_debug() {
+            println!("Creating config file...");
+        }
         let mut file = File::create("config/main.toml")?;
-        println!("Writing config file...");
+        if self.server.get_debug() {
+            println!("Writing config file...");
+        }
         file.write_all(toml::to_string(self)?.as_bytes())?;
+        Ok(())
+    }
+
+    pub fn backup_config(&self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+        if self.server.get_debug() {
+            println!("Creating config directory...");
+        }
+        std::fs::create_dir_all(path)?;
+        if self.server.get_debug() {
+            println!("Copying config file...");
+        }
+        let mut file = File::create(format!("{}/main.toml", path))?;
+        file.write_all(toml::to_string(self)?.as_bytes())?;
+        Ok(())
+    }
+
+    pub fn restore_from_backup(&self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+        if self.server.get_debug() {
+            println!("Finding backup files...");
+        }
+        let mut backup_file = File::open(format!("{}/main.toml", path))?;
+        let mut contents = String::new();
+        backup_file.read_to_string(&mut contents)?;
+        let backup: Self = toml::from_str(&contents)?;
+        backup.save_config()?;
         Ok(())
     }
 }

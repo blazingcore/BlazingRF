@@ -2,6 +2,7 @@ pub mod server;
 
 use rand::{Rng, distr::Alphanumeric};
 
+#[allow(dead_code)]
 pub fn generate_secret() -> String {
     let length = 32;
     let secret: String = rand::rng()

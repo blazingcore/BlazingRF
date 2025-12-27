@@ -1,10 +1,10 @@
 use crate::utils::server::start_server;
 use actix_web::rt::Runtime;
 
-mod apps;
-mod config;
-mod macros;
-mod utils;
+pub mod apps;
+pub mod config;
+pub mod macros;
+pub mod utils;
 
 pub struct Blast {
     secret: String,

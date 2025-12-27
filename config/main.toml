@@ -1,7 +1,7 @@
 applications = []
 
 [server]
-port = 8080
+port = 8000
 secret = "MUc9fHJhyE9NUPS5vD6yCWAIwyGEX4gf"
 debug = false
 
